@@ -1,0 +1,18 @@
+{
+  "name": "dev-runner",
+  "projectType": "application",
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": true,
+        "commands": [
+          "npx prisma generate",
+          "nx run api-gateway:serve",
+          "nx run auth-service:serve",
+          "nx run user-ui:dev"
+        ]
+      }
+    }
+  }
+}

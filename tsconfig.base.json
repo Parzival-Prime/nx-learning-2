@@ -15,6 +15,7 @@
     "paths": {
       "@auth-service/*": ["./apps/auth-service/*"],
       "@api-gateway/*": ["./apps/api-gateway/*"],
+      "@user-ui/*": ["./apps/user-ui/*"],
       "@packages/*": ["./packages/*"],
       "@/*": ["./*"]
     }

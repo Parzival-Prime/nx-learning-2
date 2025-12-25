@@ -1,0 +1,44 @@
+{
+  "name": "user-ui",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/user-ui",
+  "projectType": "application",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project user-ui --web",
+  "targets": {
+    "build": {
+      "executor": "@nx/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "development",
+      "options": {
+        "outputPath": "../../dist/user-ui"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "../../dist/user-ui"
+        },
+        "production": {
+          "outputPath": "../../dist/user-ui"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "user-ui:build",
+        "dev": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "user-ui:build:development",
+          "dev": true
+        },
+        "production": {
+          "buildTarget": "user-ui:build:production",
+          "dev": false
+        }
+      }
+    }
+  }
+}
