@@ -1,0 +1,23 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "sourceMap": true,
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+   "target": "es2022",
+    "lib": ["es2022"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "paths": {
+      "@auth-service/*": ["./apps/auth-service/*"],
+      "@api-gateway/*": ["./apps/api-gateway/*"],
+      "@packages/*": ["./packages/*"],
+      "@/*": ["./*"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

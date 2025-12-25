@@ -40,3 +40,9 @@ Thumbs.db
 
 .nx/cache
 .nx/workspace-data
+
+/generated/prisma
+
+# Next.js
+.next
+out
