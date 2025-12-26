@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "types": ["node", "express"],
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
   },
   "include": ["src/**/*.ts"]
 }
