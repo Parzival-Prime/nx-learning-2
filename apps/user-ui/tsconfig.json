@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "preserve",
-
     "strict": true,
     "noEmit": true,
     "emitDeclarationOnly": false,
@@ -27,7 +26,8 @@
     "../../apps/user-ui/.next/types/**/*.ts",
     "../../dist/apps/user-ui/.next/types/**/*.ts",
 
-    "next-env.d.ts"
+    "next-env.d.ts",
+    "global.d.ts"
   ],
   "exclude": [
     "node_modules",
