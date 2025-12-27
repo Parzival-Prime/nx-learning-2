@@ -8,20 +8,19 @@
     "importHelpers": true,
     "target": "es2022",
     "lib": ["es2022"],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    // "ignoreDeprecations": "6.0",
     "paths": {
       "@auth-service/*": ["./apps/auth-service/*"],
       "@api-gateway/*": ["./apps/api-gateway/*"],
       "@user-ui/*": ["./apps/user-ui/*"],
       "@packages/*": ["./packages/*"],
       "@/*": ["./*"],
-      "@shadcnUI": ["packages/shadcnUI/src/index.ts"],
-      "@shadcnUI/*": ["packages/shadcnUI/src/*"]
+      "@ui/*": ["libs/ui/src/*"],
+      "@utils/*": ["libs/utils/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

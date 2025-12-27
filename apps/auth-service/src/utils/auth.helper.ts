@@ -93,7 +93,7 @@ export const handleForgotPassword = async (req: Request, res: Response, next: Ne
         await checkOtpRestrictions(email, next)
         await trackOtpRequests(email, next)
 
-        await sendOtp(email, user.name, "forgot-password-mail")
+        await sendOtp(user.name, email, "forgot-password-mail")
 
         res.status(200).json({
             message: "OTP sent to email. Please verify your account."
