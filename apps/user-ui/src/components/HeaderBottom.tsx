@@ -1,14 +1,24 @@
 'use client';
 
-import { AlignLeft, ChevronDownIcon, HeartIcon, ShoppingCartIcon, User2Icon } from 'lucide-react';
+import {
+  AlignLeft,
+  ChevronDownIcon,
+  HeartIcon,
+  ShoppingCartIcon,
+  User2Icon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { navItems } from '@user-ui/src/configs/constants';
-import { NavItemsTypes } from '../types/global';
+import { NavItemsTypes } from '@user-ui/src/types/const.types';
 import Link from 'next/link';
+import Image from 'next/image';
+import useUser from '@user-ui/src/hooks/useUser';
+import { ModeToggle } from '@ui/index';
 
 function HeaderBottom() {
   const [show, setShow] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
+  const { user, isLoading } = useUser();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,13 +33,13 @@ function HeaderBottom() {
   }, []);
   return (
     <div
-      className={`w-full h-[10%] transition-all duration-300 ${isSticky ? 'fixed top-0 left-0 z-[100] bg-white shadow-lg' : 'relative'}`}
+      className={`w-full h-[10%] transition-all duration-300 ${isSticky ? 'fixed top-0 left-0 z-100 dark:bg-neutral-700 bg-amber-50 shadow-lg' : 'relative'}`}
     >
       <div
         className={`w-[80%] relative m-auto flex items-center justify-between ${isSticky ? 'pt-3' : 'py-0'}`}
       >
         <div
-          className={`w-[260px] ${isSticky && '-mb-2'} cursor-pointer flex items-center justify-between px-5 h-[50px] bg-emerald-400 `}
+          className={`w-65 ${isSticky && '-mb-2'} cursor-pointer flex items-center justify-between px-5 h-12.5 bg-emerald-400 `}
           onClick={() => setShow((prev) => !prev)}
         >
           <div className="flex items-center gap-2">
@@ -39,7 +49,7 @@ function HeaderBottom() {
           </div>
           {show && (
             <div
-              className={`absolute left-0 ${isSticky ? 'top-[70px]' : 'top-[50px]'} w-[260px] h-[400px] bg-[#f5f5f5]`}
+              className={`absolute left-0 ${isSticky ? 'top-17.5' : 'top-12.5'} w-65 h-100 bg-[#f5f5f5]`}
             ></div>
           )}
         </div>
@@ -54,35 +64,25 @@ function HeaderBottom() {
             </Link>
           ))}
         </div>
-        <div>
           {isSticky && (
-            <div className='flex gap-3'>
-              <div className="flex items-center gap-8">
-                <Link href={'/login'} className="flex items-center gap-2">
-                  <User2Icon />
-                  <div className="text-xs">
-                    <span className="block">Hello,</span>
-                    <span className="font-semibold">SignIn</span>
-                  </div>
-                </Link>
-              </div>
-              <div className="flex items-center gap-5 ">
+            <>
+              <ModeToggle />
+              <div className="flex items-center space-x-6 ">
                 <Link href={'/wishlist'} className="relative">
                   <HeartIcon />
-                  <div className="w-5 h-5 border-2 border-white bg-red-500 rounded-full flex items-center justify-center absolute top-[-8px] right-[-8px]">
+                  <div className="w-5 h-5 border-2 border-neutral-100 bg-red-500 rounded-full flex items-center justify-center absolute -top-2 -right-2">
                     <span className="text-white text-sm font-medium">0</span>
                   </div>
                 </Link>
                 <Link href={'/wishlist'} className="relative">
                   <ShoppingCartIcon />
-                  <div className="w-5 h-5 border-2 border-white bg-red-500 rounded-full flex items-center justify-center absolute top-[-8px] right-[-8px]">
+                  <div className="w-5 h-5 border-2 border-neutral-100 bg-red-500 rounded-full flex items-center justify-center absolute -top-2 -right-2">
                     <span className="text-white text-sm font-medium">0</span>
                   </div>
                 </Link>
               </div>
-            </div>
+            </>
           )}
-        </div>
       </div>
     </div>
   );

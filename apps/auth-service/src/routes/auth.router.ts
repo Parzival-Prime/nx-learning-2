@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { loginUser, userForgotPassword, userRegistration, verifyUserForgotPasswordOtp, verifyUser, userResetPassword } from "@auth-service/src/controllers/auth.controller";
+import { loginUser, userForgotPassword, userRegistration, verifyUserForgotPasswordOtp, verifyUser, userResetPassword, refreshToken, getUser } from "@auth-service/src/controllers/auth.controller";
+import isAuthenticated from "@packages/middleware/isAuthenticated"
 
 const router = Router()
 
@@ -9,6 +10,8 @@ router.post('/login-user', loginUser)
 router.post('/user-forgot-password', userForgotPassword)
 router.post('/verify-forgot-password-otp',  verifyUserForgotPasswordOtp)
 router.post('/user-reset-password', userResetPassword)
+router.post('/refresh-token-user', refreshToken)
+router.get('/logged-in-user', isAuthenticated, getUser)
 
 export default router
 

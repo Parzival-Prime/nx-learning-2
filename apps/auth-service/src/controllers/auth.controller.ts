@@ -3,7 +3,7 @@ import { checkOtpRestrictions, handleForgotPassword, sendOtp, trackOtpRequests, 
 import prisma from "@packages/libs/prisma"
 import bcrypt from "bcryptjs"
 import { AuthError, ValidationError } from "@packages/error-handler/index";
-import jwt from "jsonwebtoken"
+import jwt, { JsonWebTokenError } from "jsonwebtoken"
 import { setCookie } from "@auth-service/src/utils/cookies/setCookies";
 
 export async function userRegistration(req: Request, res: Response, next: NextFunction) {
@@ -28,6 +28,7 @@ export async function userRegistration(req: Request, res: Response, next: NextFu
         next(error)
     }
 }
+
 
 export async function verifyUser(req: Request, res: Response, next: NextFunction) {
     try {
@@ -59,6 +60,7 @@ export async function verifyUser(req: Request, res: Response, next: NextFunction
         return next(error)
     }
 }
+
 
 export async function loginUser(req: Request, res: Response, next: NextFunction) {
     try {
@@ -105,10 +107,10 @@ export async function loginUser(req: Request, res: Response, next: NextFunction)
 
 export async function userForgotPassword(req: Request, res: Response, next: NextFunction) {
     await handleForgotPassword(req, res, next, "user")
-}  
+}
 
 
-export async function verifyUserForgotPasswordOtp(req: Request, res: Response, next: NextFunction){
+export async function verifyUserForgotPasswordOtp(req: Request, res: Response, next: NextFunction) {
     await verifyForgotPasswordOtp(req, res, next)
 }
 
@@ -145,5 +147,57 @@ export async function userResetPassword(req: Request, res: Response, next: NextF
         })
     } catch (error) {
         return next(error)
+    }
+}
+
+
+export async function refreshToken(req: Request, res: Response, next: NextFunction) {
+    try {
+        const refreshToken = req.cookies.refresh_token
+
+        if (!refreshToken) {
+            return res.status(401).json({ message: "Account not found!" });
+        }
+
+        const decoded = jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET as string
+        ) as { id: string; role: "user" | "string" }
+ 
+        if (!decoded || !decoded.id || !decoded.role) {
+            return new JsonWebTokenError("Invalid Refresh Token")
+        }
+
+        // let account;
+        // if(decoded.role === "user"){
+        const user = await prisma.user.findUnique({ where: { id: decoded.id } })
+        // }
+        if (!user) {
+            return new AuthError("Forbidden! User not found.")
+        }
+
+        const newAccessToken = jwt.sign({
+            id: decoded.id, role: decoded.role
+        }, process.env.ACCESS_TOKEN_SECRET as string,
+            { expiresIn: "15m" }
+        )
+
+        setCookie(res, "access_token", newAccessToken)
+        return res.status(200).json({ success: true })
+    } catch (error) {
+        return next(error)
+    }
+}
+
+
+export async function getUser(req: any, res: Response, next: NextFunction) {
+    try {
+        const user = req.user
+        return res.status(201).json({
+            success: true,
+            user
+        })
+    } catch (error) {
+        next(error)
     }
 }

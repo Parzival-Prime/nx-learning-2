@@ -1,7 +1,9 @@
-import '@shadcnUI/styles/global.css';
+import './styles.css';
 import { Poppins, Roboto } from 'next/font/google';
 import Header from '@user-ui/src/components/Header';
-import { ThemeProvider } from '@shadcnUI/components/theme-provider';
+import { ThemeProvider } from '@ui/index';
+import Providers from '../components/providers';
+import { Toaster } from 'sonner';
 
 export const metadata = {
   title: 'Multi vendor ecom',
@@ -26,11 +28,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning >
-      <body className={`${roboto.variable} ${poppins.variable} min-h-screen bg-background text-foreground`}>
-        <ThemeProvider>
-          <Header />
-          {children}
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${roboto.variable} ${poppins.variable} min-h-screen bg-background text-foreground`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers>
+            <Toaster />
+            <Header />
+            {children}
+          </Providers>
         </ThemeProvider>
       </body>
     </html>
