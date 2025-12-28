@@ -39,8 +39,6 @@ export default function page() {
   );
 }
 
-
-
 export function LoginForm({
   className,
   ...props
@@ -57,23 +55,27 @@ export function LoginForm({
   } = useForm<FormData>();
 
   const loginMutation = useMutation({
-    mutationFn: async(data: FormData)=>{
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/login-user`, 
-        data, {withCredentials: true}
-      )
-      return response.data
+    mutationFn: async (data: FormData) => {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/login-user`,
+        data,
+        { withCredentials: true },
+      );
+      return response.data;
     },
-    onSuccess: ()=>{
-      setSeverError(null)
-      router.push("/")
+    onSuccess: () => {
+      setSeverError(null);
+      router.push('/');
     },
-    onError: (error: AxiosError)=>{
-      const errMessage = (error.response?.data as {message?: string}) ?.message || "Invalid Credentials"
-      setSeverError(errMessage)
-    }
-  })
+    onError: (error: AxiosError) => {
+      const errMessage =
+        (error.response?.data as { message?: string })?.message ||
+        'Invalid Credentials';
+      setSeverError(errMessage);
+    },
+  });
   const onSubmit = (data: FormData) => {
-    loginMutation.mutate(data)
+    loginMutation.mutate(data);
   };
 
   return (
@@ -172,7 +174,9 @@ export function LoginForm({
                 <p className="text-red-500 text-sm">{String(serverError)}</p>
               )}
               <Field>
-                <Button type="submit" disabled={loginMutation.isPending}>{loginMutation.isPending ? "Logging..." : "Login"}</Button>
+                <Button type="submit" disabled={loginMutation.isPending}>
+                  {loginMutation.isPending ? 'Logging...' : 'Login'}
+                </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account? <a href="/signup">Sign up</a>
                 </FieldDescription>
@@ -188,11 +192,3 @@ export function LoginForm({
     </div>
   );
 }
-
-
-
-
-
-
-
-
