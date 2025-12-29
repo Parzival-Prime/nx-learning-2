@@ -10,19 +10,82 @@ datasource db {
 
 model image {
   id String @id @default(auto()) @map("_id") @db.ObjectId
+  
   file_id String
   url String
   userId String? @db.ObjectId @unique
+
   user user? @relation(fields: [userId], references: [id])
+  shopId String? @db.ObjectId @unique
+  shop shop? @relation(fields: [shopId], references: [id])
 }
 
 model user {
   id String @id @default(auto()) @map("_id") @db.ObjectId
+
   name String
   email String @unique
   password String?
   avatar image?
   following String[]
+
+  reviews shopReview[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model shopReview {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  rating Float
+  review String?
+
+  userId String @db.ObjectId
+  user  user @relation(fields:[userId], references: [id])
+  shopId String @db.ObjectId
+  shop shop @relation(fields: [shopId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model shop {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  name String
+  description String?
+  category String
+  logo image?
+  coverBanner String?
+  address String
+  openingHours String?
+  website String?
+  socialLinks Json[]
+  ratings Float @default(0)
+  reviews shopReview[]
+  seller seller? 
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model seller {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  name String
+  email String @unique
+  phone_number String
+  country String
+  password String
+  stripeId String?
+
+  shopId String? @unique @db.ObjectId
+  shop shop? @relation(fields: [shopId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
