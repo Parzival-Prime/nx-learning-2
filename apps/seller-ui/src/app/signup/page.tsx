@@ -27,7 +27,7 @@ import {
 import { Input } from '@ui/components/ui/input';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { Eye, EyeOff } from 'lucide-react';
 import {
   InputOTP,
@@ -37,9 +37,28 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { countries } from '@seller-ui/src/constants/countries';
+import CreateShop from '@seller-ui/src/components/create-shop';
+import Image from 'next/image';
 
 type otpFormData = {
   otp: string;
+};
+
+type signUpFormData = {
+  name: string;
+  email: string;
+  phone_number: string;
+  password: string;
+  country: string;
+};
+
+type sellerFormData = {
+  name: string;
+  email: string;
+  password: string;
+  description: string;
+  opening_hours: string;
+  country: string;
 };
 
 export default function page() {
@@ -47,16 +66,11 @@ export default function page() {
   const [serverError, setSeverError] = useState<string | null>(null);
   const [canResend, setCanResend] = useState(false);
   const [timer, setTimer] = useState(60);
-  const [userData, setUserData] = useState({});
+  const [sellerData, setSellerData] = useState<signUpFormData>();
+  const [sellerId, setSellerId] = useState();
   const [showOtp, setShowOtp] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
   const router = useRouter();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
 
   const startResendTimer = () => {
     const interval = setInterval(() => {
@@ -71,44 +85,66 @@ export default function page() {
     }, 1000);
   };
 
+  // SignUp Form Handling Logic
+
+  const signUpForm = useForm<signUpFormData>({
+    defaultValues: {
+      name: '',
+      email: '',
+      phone_number: '',
+      password: '',
+      country: '',
+    },
+  });
+
   const signUpMutation = useMutation({
-    mutationFn: async (data) => {
+    mutationFn: async (data: signUpFormData) => {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/user-registration`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/seller-registration`,
         data,
       );
       return response.data;
     },
     onSuccess: (_, formData: any) => {
-      setUserData(formData);
+      setSellerData(formData);
       setShowOtp(true);
-      setCanResend(false);
+      setCanResend(false);      
       setTimer(60);
       startResendTimer();
     },
   });
-  const onSubmitSignup = async (data: any) => {
+
+  const onSubmitSignup = async (data: signUpFormData) => {      
     signUpMutation.mutate(data);
   };
 
+  function resendOtp() {
+    if (sellerData) {
+      signUpMutation.mutate(sellerData as any);
+    }
+  }
+
+  // OTP Verification Form Handling Logic
+
+  const otpForm = useForm<otpFormData>();
+
   const verifyOtpMutation = useMutation({
     mutationFn: async (otp: string) => {
-      if (!userData) return;
+      if (!sellerData) return;
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/verify-user`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/seller-verification`,
         {
-          ...userData,
+          ...sellerData,
           otp,
         },
       );
       return response.data;
     },
-    onSuccess: () => {
-      router.push('/login');
+    onSuccess: (data) => {
+      setSellerId(data?.seller?.id);
+      setActiveStep(2);
     },
   });
-
-  const otpForm = useForm<otpFormData>();
 
   const submitOtp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -116,11 +152,17 @@ export default function page() {
     verifyOtpMutation.mutate(formData.get('otp') as string);
   };
 
-  function resendOtp() {
-    if (userData) {
-      // signUpMutation.mutate(userData);
+  async function connectStripe() {
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/create-stripe-link`, {sellerId})
+      if(response?.data?.url){
+        window.location.href = response.data.url
+      }
+    } catch (error) {
+      console.log("Stripe Connection Error: ", error)
     }
   }
+
   return (
     <div className="flex flex-col min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="relative flex justify-between items-center md:w-[40%] mb-8">
@@ -154,7 +196,9 @@ export default function page() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleSubmit(onSubmitSignup)}>
+                  <form
+                    onSubmit={signUpForm.handleSubmit(onSubmitSignup)}
+                  >
                     <FieldGroup>
                       <Field>
                         <FieldLabel htmlFor="name">Full Name</FieldLabel>
@@ -163,7 +207,7 @@ export default function page() {
                           type="text"
                           placeholder="Parzival Prime"
                           required
-                          {...register('name', {
+                          {...signUpForm.register('name', {
                             required: 'Name is required',
                             minLength: {
                               value: 3,
@@ -172,9 +216,9 @@ export default function page() {
                             },
                           })}
                         />
-                        {errors.name && (
+                        {signUpForm.formState.errors.name && (
                           <p className="text-red-500 text-sm">
-                            {String(errors.name.message)}
+                            {String(signUpForm.formState.errors.name.message)}
                           </p>
                         )}
                       </Field>
@@ -186,7 +230,7 @@ export default function page() {
                           type="email"
                           placeholder="m@example.com"
                           required
-                          {...register('email', {
+                          {...signUpForm.register('email', {
                             required: 'Email is required',
                             pattern: {
                               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -194,9 +238,9 @@ export default function page() {
                             },
                           })}
                         />
-                        {errors.email && (
+                        {signUpForm.formState.errors.email && (
                           <p className="text-red-500 text-sm">
-                            {String(errors.email.message)}
+                            {String(signUpForm.formState.errors.email.message)}
                           </p>
                         )}
                       </Field>
@@ -208,17 +252,17 @@ export default function page() {
                           type="tel"
                           placeholder="-------- -------- ------"
                           required
-                          {...register('phone_number', {
+                          {...signUpForm.register('phone_number', {
                             required: 'Phone Number is required',
                             pattern: {
-                              value: /^\+?[1-9]\d{1,14}$/,
+                              value: /^\+?[0-9\s\-]{7,15}$/,
                               message: 'Invalid Phone number format',
                             },
                           })}
                         />
-                        {errors.email && (
+                        {signUpForm.formState.errors.phone_number && (
                           <p className="text-red-500 text-sm">
-                            {String(errors.email.message)}
+                            {String(signUpForm.formState.errors.phone_number.message)}
                           </p>
                         )}
                       </Field>
@@ -231,7 +275,7 @@ export default function page() {
                               id="password"
                               type={passwordVisible ? 'text' : 'password'}
                               required
-                              {...register('password', {
+                              {...signUpForm.register('password', {
                                 required: 'Password is required',
                                 minLength: {
                                   value: 6,
@@ -241,6 +285,7 @@ export default function page() {
                               })}
                             />
                             <button
+                              type="button" // ✅ REQUIRED
                               className="text-xs absolute inset-y-0 right-3 flex items-center text-gray-400"
                               onClick={() =>
                                 setPasswordVisible((prev) => !prev)
@@ -249,9 +294,11 @@ export default function page() {
                               {passwordVisible ? <Eye /> : <EyeOff />}
                             </button>
                           </div>
-                          {errors.password && (
+                          {signUpForm.formState.errors.password && (
                             <p className="text-red-500 text-sm">
-                              {String(errors.password.message)}
+                              {String(
+                                signUpForm.formState.errors.password.message,
+                              )}
                             </p>
                           )}
                         </Field>
@@ -260,40 +307,36 @@ export default function page() {
                         </FieldDescription>
                       </Field>
 
-                      <Field>
-                        <FieldLabel htmlFor="country">Country</FieldLabel>
-                        <Select value=''>
-                          <SelectTrigger className="w-45">
-                            <SelectValue placeholder="Select a country" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Countries</SelectLabel>
+                      
+                      <Controller
+                        name="country"
+                        control={signUpForm.control}
+                        render={({ field }) => (
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select a country" />
+                            </SelectTrigger>
 
-                              {countries.map((country) => (
-                                <SelectItem
-                                  key={country.code}
-                                  value={country.code}
-                                >
-                                  {country.name}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                        {errors.email && (
-                          <p className="text-red-500 text-sm">
-                            {String(errors.email.message)}
-                          </p>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Countries</SelectLabel>
+
+                                {countries.map((country) => (
+                                  <SelectItem
+                                    key={country.code}
+                                    value={country.code}
+                                  >
+                                    {country.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
                         )}
-                      </Field>
-
-                      {/* <Field>
-                    <FieldLabel htmlFor="confirm-password">
-                      Confirm Password
-                    </FieldLabel>
-                    <Input id="confirm-password" type={passwordVisible ? 'text' : 'password'} required />
-                  </Field> */}
+                      />
 
                       <Field>
                         <Button
@@ -319,7 +362,7 @@ export default function page() {
               </FieldDescription>
             </div>
           ) : (
-            <Card>
+            <Card className='w-90'>
               <CardHeader className="text-center">
                 <CardTitle className="text-xl">
                   Enter verification code
@@ -328,8 +371,8 @@ export default function page() {
                   We sent a 6-digit code to your email.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <form onSubmit={submitOtp}>
+              <CardContent className='w-full '>
+                <form onSubmit={submitOtp} className=''>
                   <FieldGroup>
                     <Field>
                       <FieldLabel htmlFor="otp" className="sr-only">
@@ -377,9 +420,20 @@ export default function page() {
               </CardContent>
             </Card>
           ))}
-        {/* {activeStep === 2 &&
-        ()
-        } */}
+        {activeStep === 2 && (
+          <CreateShop sellerId={sellerId!} setActiveStep={setActiveStep}  />
+        )}
+        {activeStep === 3 && (
+          <div className='text-center'>
+            <h3 className='text-2xl font-semibold'>Withdraw Method</h3>
+            <br />
+            <button className='w-full m-auto flex items-center justify-center gap-2 text-lg bg-neutral-800  hover:bg-neutral-700 transition-all duration-1 ease-in-out text-white py-2 rounded-lg'
+            onClick={connectStripe}
+            >
+              Connect Stripe <Image src={"/stripe-2.svg"} width={22} height={22} alt='stripe logo' className='rounded-sm' />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

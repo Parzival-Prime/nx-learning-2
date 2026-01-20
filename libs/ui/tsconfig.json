@@ -9,7 +9,7 @@
     "moduleResolution": "nodenext"
   },
   "files": [],
-  "include": [],
+  "include": ["dom"],
   "references": [
     {
       "path": "./tsconfig.lib.json"

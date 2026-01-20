@@ -10,6 +10,7 @@ export default async function isAuthenticated(
   try {
     const token =
       req.cookies.access_token ||
+      req.cookies.seller_access_token ||
       req.headers.authorization?.split(" ")[1];
 
     if (!token) {
@@ -21,15 +22,25 @@ export default async function isAuthenticated(
       process.env.ACCESS_TOKEN_SECRET!
     ) as { id: string; role: "user" | "seller" };
 
-    const account = await prisma.user.findUnique({
-      where: { id: decoded.id },
-    });
+    let account
+    if(decoded.role === "user"){
+      account = await prisma.user.findUnique({
+        where: { id: decoded.id },
+      });
+      req.user = account;
+    } else if(decoded.role === "seller") {
+      account = await prisma.seller.findUnique({
+        where: { id: decoded.id },
+        include: { shop: true }
+      });
+      req.seller = account;
+    }
 
     if (!account) {
       return res.status(401).json({ message: "Account not found!" });
     }
 
-    req.user = account;
+    req.role = decoded.role
     next();
   } catch (error) {
     if (error instanceof TokenExpiredError) {
