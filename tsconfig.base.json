@@ -7,7 +7,7 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "es2022",
-    "lib": ["es2022"],
+    "lib": ["dom", "dom.iterable", "es2022"],
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "skipLibCheck": true,
@@ -15,6 +15,7 @@
     "baseUrl": ".",
     "paths": {
       "@auth-service/*": ["./apps/auth-service/*"],
+      "@product-service/*": ["./apps/product-service/*"],
       "@api-gateway/*": ["./apps/api-gateway/*"],
       "@user-ui/*": ["./apps/user-ui/*"],
       "@seller-ui/*": ["./apps/seller-ui/*"],

@@ -28,7 +28,7 @@
 
     "next-env.d.ts",
     "global.d.ts"
-  ],
+, "../../libs/ui/src/components/color-selector.tsx"  ],
   "exclude": [
     "node_modules",
     "jest.config.ts",

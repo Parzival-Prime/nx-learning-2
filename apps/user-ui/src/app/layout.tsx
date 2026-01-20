@@ -32,6 +32,7 @@ export default function RootLayout({
       <body
         className={`${roboto.variable} ${poppins.variable} min-h-screen bg-background text-foreground`}
       >
+        
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
