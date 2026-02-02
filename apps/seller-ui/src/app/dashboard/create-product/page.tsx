@@ -146,12 +146,15 @@ export default function page() {
 
   async function onSubmit(data: any) {
     console.log('SUBMIT DATA:', data);
+    console.log('selectedImage: ', selectedImage);
     setLoading(true);
     try {
       await axiosInstance.post('/product/api/create-product', data);
       router.push('/dashboard/all-products');
     } catch (error: any) {
-      toast.error(error?.data?.message || "Fucking error is not displaying properly!");
+      toast.error(
+        error?.data?.message || 'Fucking error is not displaying properly!',
+      );
     } finally {
       setLoading(false);
     }
@@ -199,6 +202,12 @@ export default function page() {
       </Breadcrumb>
 
       <div className="py-4 w-full flex gap-6">
+        <Controller
+          name="images"
+          control={control}
+          defaultValue={images}
+          render={() => <span/>}
+        />
         <div className="md:w-[35%] ">
           {images?.length > 0 && (
             <ImagePlaceholder

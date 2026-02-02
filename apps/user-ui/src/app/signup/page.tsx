@@ -98,7 +98,7 @@ export function SignupForm({
       return response.data
     },
     onSuccess: ()=>{
-      router.push("/login")
+      // router.push("/login")
     }
   })
 
@@ -117,7 +117,7 @@ export function SignupForm({
   }
 
   return !showOtp ? (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={cn('flex flex-col gap-6 font-amarna', className)} {...props}>
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Create your account</CardTitle>

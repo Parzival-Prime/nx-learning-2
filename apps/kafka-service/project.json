@@ -1,0 +1,67 @@
+{
+  "name": "kafka-service",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/kafka-service/src",
+  "projectType": "application",
+  "targets": {
+    "prune-lockfile": {
+      "dependsOn": ["build"],
+      "cache": true,
+      "executor": "@nx/js:prune-lockfile",
+      "outputs": [
+        "{workspaceRoot}/dist/apps/kafka-service/package.json",
+        "{workspaceRoot}/dist/apps/kafka-service/package-lock.json"
+      ],
+      "options": {
+        "buildTarget": "build",
+        "bundle": false,
+        "external": ["@prisma/client", ".prisma/client"]
+      }
+    },
+    "copy-workspace-modules": {
+      "dependsOn": ["build"],
+      "cache": true,
+      "outputs": ["{workspaceRoot}/dist/apps/kafka-service/workspace_modules"],
+      "executor": "@nx/js:copy-workspace-modules",
+      "options": {
+        "buildTarget": "build"
+      }
+    },
+    "prune": {
+      "dependsOn": ["prune-lockfile", "copy-workspace-modules"],
+      "executor": "nx:noop"
+    },
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/kafka-service",
+        "main": "apps/kafka-service/src/main.ts",
+        "tsConfig": "apps/kafka-service/tsconfig.app.json",
+        "webpackConfig": "apps/kafka-service/webpack.config.cjs",
+        "assets": ["apps/kafka-service/src/assets"]
+      }
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": ["build"],
+      "options": {
+        "buildTarget": "kafka-service:build",
+        "inspect": false,
+        "watch": false,
+        "runBuildTargetDependencies": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "kafka-service:build:development"
+        },
+        "production": {
+          "buildTarget": "kafka-service:build:production"
+        }
+      }
+    }
+  },
+  "tags": []
+}

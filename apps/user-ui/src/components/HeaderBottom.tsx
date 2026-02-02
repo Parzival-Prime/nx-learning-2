@@ -14,10 +14,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import useUser from '@user-ui/src/hooks/useUser';
 import { ModeToggle } from '@ui/index';
+import { useStore } from '../store';
 
 function HeaderBottom() {
   const [show, setShow] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
+  const wishList = useStore((state: any) => state.wishList);
+  const cart = useStore((state: any) => state.cart);
   const { user, isLoading } = useUser();
 
   useEffect(() => {
@@ -64,25 +67,25 @@ function HeaderBottom() {
             </Link>
           ))}
         </div>
-          {isSticky && (
-            <>
-              <ModeToggle />
-              <div className="flex items-center space-x-6 ">
-                <Link href={'/wishlist'} className="relative">
-                  <HeartIcon />
-                  <div className="w-5 h-5 border-2 border-neutral-100 bg-red-500 rounded-full flex items-center justify-center absolute -top-2 -right-2">
-                    <span className="text-white text-sm font-medium">0</span>
-                  </div>
-                </Link>
-                <Link href={'/wishlist'} className="relative">
-                  <ShoppingCartIcon />
-                  <div className="w-5 h-5 border-2 border-neutral-100 bg-red-500 rounded-full flex items-center justify-center absolute -top-2 -right-2">
-                    <span className="text-white text-sm font-medium">0</span>
-                  </div>
-                </Link>
-              </div>
-            </>
-          )}
+        {isSticky && (
+          <>
+            <ModeToggle />
+            <div className="flex items-center space-x-6 ">
+              <Link href={'/wishlist'} className="relative">
+                <HeartIcon />
+                <div className="w-5 h-5 border-2 border-neutral-100 bg-red-500 rounded-full flex items-center justify-center absolute -top-2 -right-2">
+                  <span className="text-white text-sm font-medium">{wishList?.length}</span>
+                </div>
+              </Link>
+              <Link href={'/wishlist'} className="relative">
+                <ShoppingCartIcon />
+                <div className="w-5 h-5 border-2 border-neutral-100 bg-red-500 rounded-full flex items-center justify-center absolute -top-2 -right-2">
+                  <span className="text-white text-sm font-medium">{cart?.length}</span>
+                </div>
+              </Link>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

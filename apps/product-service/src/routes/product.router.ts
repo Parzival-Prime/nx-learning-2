@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createDiscountCode, createProduct, deleteDiscountCode, deleteProduct, deleteProductImage, getCategories, getDiscountCodes, getShopProducts, restoreProduct, uploadProductImage } from "../controllers/product.controller";
+import { createDiscountCode, createProduct, deleteDiscountCode, deleteProduct, deleteProductImage, getAllProducts, getCategories, getDiscountCodes, getShopProducts, restoreProduct, uploadProductImage, getProductDetails, getFilteredProducts, getFilteredEvents, getFilteredShops, searchProducts, getAllEvents, topShops } from "../controllers/product.controller";
 import isAuthenticated  from "@packages/middleware/isAuthenticated"
 
 const router = Router()
@@ -14,5 +14,13 @@ router.post("/create-product", isAuthenticated, createProduct)
 router.get("/get-shop-products", isAuthenticated, getShopProducts)
 router.delete('/delete-product/:productId', isAuthenticated, deleteProduct)
 router.put('/restore-product/:productId', isAuthenticated, restoreProduct)
+router.get("/get-all-products", getAllProducts)
+router.get("/get-all-events", getAllEvents)
+router.get("/get-product/:slug", getProductDetails)
+router.get("/get-filtered-products", getFilteredProducts)
+router.get("/get-filtered-offers", getFilteredEvents)
+router.get("/get-filtered-shops", getFilteredShops)
+router.get("/search-products", searchProducts)
+router.get('/top-shops', topShops)
 
 export default router

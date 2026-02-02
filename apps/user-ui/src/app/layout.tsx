@@ -4,6 +4,9 @@ import Header from '@user-ui/src/components/Header';
 import { ThemeProvider } from '@ui/index';
 import Providers from '../components/providers';
 import { Toaster } from 'sonner';
+import { Nunito, Amarna, Saira, Comfortaa, Kanit, Quicksand, Raleway, Orbitron } from "next/font/google";
+
+
 
 export const metadata = {
   title: 'Multi vendor ecom',
@@ -22,6 +25,52 @@ const poppins = Poppins({
   variable: '--font-poppins',
 });
 
+
+
+const nunito = Nunito({
+  variable: "--font-nunito",
+  subsets: ["latin"],
+});
+
+const amarna = Amarna({
+  variable: "--font-amarna",
+  subsets: ["latin"],
+  adjustFontFallback: false, 
+});
+
+const saira = Saira({
+  variable: "--font-saira",
+  subsets: ["latin"],
+});
+
+const comfortaa = Comfortaa({
+  variable: "--font-comfortaa",
+  subsets: ["latin"],
+});
+
+const raleway = Raleway({
+  variable: "--font-raleway",
+  subsets: ["latin"],
+});
+
+const quicksand = Quicksand({
+  variable: "--font-quicksand",
+  subsets: ["latin"],
+});
+
+const kanit = Kanit({
+  variable: "--font-kanit",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800",],
+});
+
+const orbitron = Orbitron({
+  variable: "--font-orbitron",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800",],
+});
+
+
 export default function RootLayout({
   children,
 }: {
@@ -30,7 +79,16 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${roboto.variable} ${poppins.variable} min-h-screen bg-background text-foreground`}
+        className={`${roboto.variable} ${poppins.variable} 
+          ${nunito.variable}
+          ${amarna.variable}
+          ${kanit.variable}
+          ${comfortaa.variable}
+          ${quicksand.variable}
+          ${raleway.variable}
+          ${saira.variable}
+          ${orbitron.variable}
+          min-h-screen bg-background text-foreground`}
       >
         
         <ThemeProvider

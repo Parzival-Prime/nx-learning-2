@@ -1,0 +1,22 @@
+export const countries = [
+  "India",
+  "United States",
+  "Canada",
+  "United Kingdom",
+  "Germany",
+  "France",
+  "Italy",
+  "Spain",
+  "Australia",
+  "New Zealand",
+  "Japan",
+  "China",
+  "South Korea",
+  "Brazil",
+  "Mexico",
+  "Argentina",
+  "South Africa",
+  "Nigeria",
+  "Egypt",
+  "United Arab Emirates"
+];

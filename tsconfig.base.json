@@ -16,6 +16,7 @@
     "paths": {
       "@auth-service/*": ["./apps/auth-service/*"],
       "@product-service/*": ["./apps/product-service/*"],
+      "@kafka-service/*": ["./apps/kafka-service/*"],
       "@api-gateway/*": ["./apps/api-gateway/*"],
       "@user-ui/*": ["./apps/user-ui/*"],
       "@seller-ui/*": ["./apps/seller-ui/*"],

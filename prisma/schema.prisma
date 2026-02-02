@@ -17,31 +17,36 @@ enum productStatus {
 model image {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  file_id   String
-  url       String
-  userId    String? @unique @db.ObjectId
-  shopId    String? @unique @db.ObjectId
-  productId String? @unique @db.ObjectId
+  file_id String
+  url     String
 
-  user     user?    @relation(fields: [userId], references: [id])
-  shop     shop?    @relation(fields: [shopId], references: [id])
-  products product? @relation(fields: [productId], references: [id])
+  userId    String? @db.ObjectId
+  shopId    String? @db.ObjectId
+  productId String? @db.ObjectId
+
+  user    user?    @relation("UserAvatar", fields: [userId], references: [id])
+  shop    shop?    @relation("ShopLogo", fields: [shopId], references: [id])
+  product product? @relation("ProductImages", fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
 }
 
 model user {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  name      String
-  email     String   @unique
-  password  String?
-  avatar    image?
-  following String[]
+  name     String
+  email    String   @unique
+  password String?
+  avatar   image[]  @relation("UserAvatar")
+
+  following ShopFollower[]
 
   reviews shopReview[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 
 model shopReview {
   id String @id @default(auto()) @map("_id") @db.ObjectId
@@ -58,26 +63,47 @@ model shopReview {
   updatedAt DateTime @updatedAt
 }
 
+
+model ShopFollower {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  shopId String @db.ObjectId
+  userId String @db.ObjectId
+
+  shop shop @relation(fields: [shopId], references: [id])
+  user user @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([shopId, userId]) // prevents duplicate follows
+}
+
+
+
 model shop {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   name         String
   description  String?
   category     String
-  logo         image?
+  logo         image[] @relation("ShopLogo")
   coverBanner  String?
   address      String
   openingHours String?
   website      String?
   products     product[]
   socialLinks  Json[]
-  ratings      Float        @default(0)
+  ratings      Float @default(0)
   reviews      shopReview[]
   seller       seller?
+  orders       orders[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  followers    ShopFollower[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
+
 
 model seller {
   id String @id @default(auto()) @map("_id") @db.ObjectId
@@ -89,22 +115,22 @@ model seller {
   password     String
   stripeId     String?
 
-  shopId       String? @unique @db.ObjectId
-  shop         shop?   @relation(fields: [shopId], references: [id])
+  shopId String? @unique @db.ObjectId
+  shop   shop?   @relation(fields: [shopId], references: [id])
 
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model site_config {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   categories    String[]
   subCategories Json
 }
 
 model discount_codes {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
   public_name   String
   discountType  String
@@ -112,8 +138,8 @@ model discount_codes {
   discountCode  String @unique
   sellerId      String @db.ObjectId
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model product {
@@ -124,12 +150,13 @@ model product {
   subCategory           String
   short_description     String
   detailed_description  String
-  images                image[]
+  images                image[]       @relation("ProductImages")
   video_url             String?
   tags                  String[]
   brand                 String?
   colors                String[]
   sizes                 String[]
+  isEvent               Boolean @default(false)
   starting_date         DateTime?
   ending_date           DateTime?
   stock                 Int
@@ -142,11 +169,59 @@ model product {
   isDeleted             Boolean?      @default(false)
   cashOnDelivery        String?
   discount_codes        String[]      @db.ObjectId
+  totalSales            Int           @default(0)
   status                productStatus @default(Active)
-  deletedAt             DateTime?
-  createdAt             DateTime      @default(now())
-  updatedAt             DateTime      @updatedAt
 
-  shopId                String @db.ObjectId
-  shop                  shop   @relation(fields: [shopId], references: [id])
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  shopId String @db.ObjectId
+  shop   shop   @relation(fields: [shopId], references: [id])
+}
+
+model UserAnalytics {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @unique
+
+  actions     Json     // stores product interactions
+  lastVisited DateTime
+
+  country     String?
+  city        String?
+  device      String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ProductAnalytics {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId      String   @unique
+  shopId         String?
+
+  views          Int      @default(0)
+  cartAdds       Int      @default(0)
+  wishListAdds   Int      @default(0)
+  purchases      Int      @default(0)
+
+  lastViewedAt   DateTime?
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+
+model orders {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+
+  shopId    String   @db.ObjectId
+  shop      shop     @relation(fields: [shopId], references: [id])
+
+  total     Float    // or Decimal (recommended for money)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([shopId])
 }
