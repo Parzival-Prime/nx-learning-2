@@ -11,14 +11,16 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "development",
       "options": {
-        "outputPath": "../../dist/user-ui"
+        "root": "apps/user-ui",
+        "outputPath": "dist/apps/user-ui",
+        "assets": ["public"]
       },
       "configurations": {
         "development": {
-          "outputPath": "../../dist/user-ui"
+          "outputPath": "dist/apps/user-ui"
         },
         "production": {
-          "outputPath": "../../dist/user-ui"
+          "outputPath": "dist/apps/user-ui"
         }
       }
     },

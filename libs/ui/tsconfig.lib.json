@@ -20,5 +20,5 @@
     "**/*.spec.jsx",
     "**/*.test.jsx"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx", "src/components/color-selector.tsx"]
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx", "src/components/color-selector.tsx", "../../apps/user-ui/src/components/Header.tsx", "../../apps/user-ui/src/components/HeaderBottom.tsx"]
 }

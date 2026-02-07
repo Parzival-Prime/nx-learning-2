@@ -1,7 +1,7 @@
 import './styles.css';
 import { Poppins, Roboto} from 'next/font/google';
 import { Nunito, Amarna, Saira, Comfortaa, Kanit, Quicksand, Raleway, Orbitron } from "next/font/google";
-import Header from '@user-ui/src/components/Header';
+import Header from '@seller-ui/src/components/Header';
 import { ThemeProvider } from '@ui/index';
 import Providers from '@seller-ui/src/components/providers';
 import { Toaster } from 'sonner';
