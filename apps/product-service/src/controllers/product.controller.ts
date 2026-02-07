@@ -196,7 +196,7 @@ export async function createProduct(req: any, res: Response, next: NextFunction)
                 category,
                 subCategory: subcategory,
                 colors: colors || [],
-                discount_codes: discountCodes.map((codeId: string) => codeId),
+                discount_codes: discountCodes ? discountCodes.map((codeId: string) => codeId) : ["No Discount Available!"],
                 sizes: sizes || [],
                 stock: parseInt(stock),
                 sale_price: parseFloat(sale_price),

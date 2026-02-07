@@ -11,9 +11,8 @@ function HeroSection() {
         <p className="font-Roboto font-normal text-white pb-2 text-xl">
           starting from $40
         </p>
-        <h1 className="text-white text-6xl font-extrabold font-Roboto">
-          The best watch <br />
-          Collection 2025
+        <h1 className="text-white text-4xl font-extrabold font-Roboto">
+          Best Shopping Platform for <br /> Agriculture and your Garden
         </h1>
         <p className="font-Oregano text-3xl pt-4 text-white">
           Exclusive Offer <span className='text-yellow-400'>10%</span> this week

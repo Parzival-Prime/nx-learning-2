@@ -10,7 +10,7 @@ import { initializeConfig } from './libs/initializeSiteConfig';
 const app = express();
 
 app.use(cors({
-  origin: ["http://localhost:3000"],
+  origin: ["http://localhost:3000", "http://localhost:3001"],
   allowedHeaders: ["Authorization", "Content-Type"],
   credentials: true
 }))
@@ -41,16 +41,17 @@ app.get('/gateway-health', (req, res) => {
 })
 
 app.use("/product", proxy("http://localhost:6002"))
+app.use("/order", proxy("http://localhost:6004"))
 app.use("/", proxy("http://localhost:6001"))
 
 const port = process.env.PORT || 8080;
 const server = app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}`)
+  console.log(`\n\n//===== API Gateway Listening at http://localhost:${port} ====//\n\n`)
   try {
     initializeConfig()
     console.log("Site config Initialized successfully!")
   } catch (error) {
-    
+    console.log(error)
   };
 });
 server.on('error', console.error);

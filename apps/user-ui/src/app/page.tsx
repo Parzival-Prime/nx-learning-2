@@ -71,7 +71,7 @@ function page() {
         )}
 
         {!isLoading && !isError && (
-          <div className="m-auto gap-2 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-6">
+          <div className="m-auto grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 2xl:grid-cols-5 gap-2">
             {products?.map((product: any) => (
               <ProductCard key={product.id} product={product} />
             ))}

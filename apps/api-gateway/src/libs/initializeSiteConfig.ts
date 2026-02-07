@@ -13,20 +13,98 @@ export async function initializeConfig() {
                         "seeds",
                         "saplings",
                         "fertilizers",
-                        "soils&substrates",
+                        "soils-substrates",
                         "tools",
                         "pesticides",
-                        "pots"
+                        "pots-planters",
+                        "aquascaping",
                     ],
+
                     subCategories: {
-                        "seeds": ["flower-seeds/winter", "flower-seeds/summer", "fruits-seeds", "vegetable-seeds/winter", "vegetable-seeds/summer", "aquatic-plant-seeds"],
-                        "saplings": ["flowering-plant-saplings", "fruits-plant-saplings", "vegetable-plant-saplings", "aquatic-plant-saplings", "mosses"],
-                        "fertilizers": ["crop-fertilizers", "garden-fertilizers", "aquascape-fertilizers"],
-                        "soil": ["garden-soil", "aquarium-soil"],
-                        "tools": ["farm/field-tools", "gardening-tools", "aquascaping-tools"],
-                        "pesticides": ["crop-pesticides", "garden-pesticides"],
-                        "pots": ["garden-pots/small", "garden-pots/big", "bonsai-pots", "aquascape-pots"]
+                        seeds: [
+                            "flower-seeds-winter",
+                            "flower-seeds-summer",
+                            "vegetable-seeds-winter",
+                            "vegetable-seeds-summer",
+                            "fruit-seeds",
+                            "herb-seeds",
+                            "aquatic-plant-seeds",
+                            "grass-lawn-seeds"
+                        ],
+
+                        saplings: [
+                            "flowering-plant-saplings",
+                            "vegetable-plant-saplings",
+                            "fruit-plant-saplings",
+                            "indoor-plant-saplings",
+                            "aquatic-plant-saplings",
+                            "bonsai-plants",
+                            "mosses"
+                        ],
+
+                        fertilizers: [
+                            "organic-fertilizers",
+                            "chemical-fertilizers",
+                            "liquid-fertilizers",
+                            "slow-release-fertilizers",
+                            "garden-fertilizers",
+                            "crop-fertilizers",
+                            "aquascape-fertilizers"
+                        ],
+
+                        "soils-substrates": [
+                            "garden-soil",
+                            "potting-soil",
+                            "organic-compost",
+                            "vermicompost",
+                            "coco-peat",
+                            "aquarium-soil",
+                            "aquarium-sand",
+                            "gravel-substrate",
+                            "lava-rocks"
+                        ],
+
+                        tools: [
+                            "gardening-tools",
+                            "farm-tools",
+                            "field-tools",
+                            "pruning-tools",
+                            "watering-tools",
+                            "aquascaping-tools",
+                            "soil-testing-tools"
+                        ],
+
+                        pesticides: [
+                            "organic-pesticides",
+                            "chemical-pesticides",
+                            "crop-pesticides",
+                            "garden-pesticides",
+                            "fungicides",
+                            "insecticides"
+                        ],
+
+                        "pots-planters": [
+                            "garden-pots-small",
+                            "garden-pots-big",
+                            "ceramic-pots",
+                            "plastic-pots",
+                            "clay-pots",
+                            "bonsai-pots",
+                            "hanging-planters",
+                            "aquascape-pots"
+                        ],
+
+                        aquascaping: [
+                            "aquarium-plants",
+                            "driftwood",
+                            "rocks-stones",
+                            "aquarium-decor",
+                            "co2-equipment",
+                            "aquarium-filters",
+                            "aquarium-lighting"
+                        ]
                     }
+
                 }
             })
         }

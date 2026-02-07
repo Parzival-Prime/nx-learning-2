@@ -1,35 +1,64 @@
-"use client"
+'use client';
 
 import { useQueryClient } from '@tanstack/react-query';
-import StateCard from '@user-ui/src/components/stat-card';
+import QuickActionCard from '@user-ui/src/components/quick-action-card';
+import ShoppingAddressSection from '@user-ui/src/components/shopping-address-section';
+import StatCard from '@user-ui/src/components/stat-card';
 import useUser from '@user-ui/src/hooks/useUser';
-import { Bell, CheckCircle, Clock, Inbox, Loader2, LogOut, MapPin, Lock, ShoppingBag, Truck, User } from 'lucide-react';
+import axiosInstance from '@user-ui/src/utils/axiosInstance';
+import {
+  Bell,
+  CheckCircle,
+  Clock,
+  Inbox,
+  Loader2,
+  LogOut,
+  MapPin,
+  Lock,
+  ShoppingBag,
+  Truck,
+  User,
+  Pencil,
+  Gift,
+  BadgeCheck,
+  Settings,
+  Receipt,
+  PhoneCall,
+} from 'lucide-react';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+
 export default function page() {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const queryClient = useQueryClient()
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
-  const { user, isLoading } = useUser()
+  const { user, isLoading } = useUser();
   const queryTab = searchParams.get('active') || 'Profile';
-  const [activeTab, setActiveTab] = useState('')
+  const [activeTab, setActiveTab] = useState('Profile');
 
-  useEffect(()=>{
-    if(activeTab === queryTab) {
-        const newParams = new URLSearchParams(searchParams)
-        newParams.set("active", activeTab)
-        router.replace(`/profile?${newParams.toString()}`)
+  useEffect(() => {
+    if (activeTab === queryTab) {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set('active', activeTab);
+      router.replace(`/profile?${newParams.toString()}`);
     }
-  },[activeTab])
+  }, [activeTab]);
+
+  async function logoutHandler(){
+    await axiosInstance.get("/api/logout-user").then((res)=>{
+      queryClient.invalidateQueries({queryKey: ["user"]})
+      router.push("/login")
+    })
+  }
 
   return (
-    <div className="bg-neutral-50 p-6 pb-14 px-20">
+    <div className="bg-black p-6 pb-14 px-20">
       <div className="md:max-w-8xl x-auto font-amarna">
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-neutral-800">
+          <h1 className="text-3xl font-bold text-neutral-200">
             Welcome Back,{' '}
             <span className="text-blue-600">
               {isLoading ? (
@@ -41,14 +70,14 @@ export default function page() {
           </h1>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          <StateCard title="Total Orders" count={10} Icon={Clock} />
-          <StateCard title="Processing Orders" count={4} Icon={Truck} />
-          <StateCard title="Completed Orders" count={5} Icon={CheckCircle} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 ">
+          <StatCard title="Total Orders" count={10} Icon={Clock} />
+          <StatCard title="Processing Orders" count={4} Icon={Truck} />
+          <StatCard title="Completed Orders" count={5} Icon={CheckCircle} />
         </div>
 
         <div className="mt-10 flex flex-col md:flex-row gap-6">
-          <div className="bg-white p-4 rounded-md shadow-md border border-neutral-100 w-full md:w-[20%] ">
+          <div className="bg-neutral-800 text-neutral-100 p-4 rounded-md shadow-sm border border-neutral-100 w-full md:w-[20%] ">
             <nav className="space-y-2">
               <NavItem
                 label="Profile"
@@ -60,13 +89,13 @@ export default function page() {
                 label="My Orders"
                 Icon={ShoppingBag}
                 active={activeTab === 'My Orders'}
-                onClick={() => setActiveTab('Profile')}
+                onClick={() => setActiveTab('My Orders')}
               />
               <NavItem
                 label="Inbox"
                 Icon={Inbox}
                 active={activeTab === 'Inbox'}
-                onClick={() => router.push("/inbox")}
+                onClick={() => router.push('/inbox')}
               />
               <NavItem
                 label="Notifications"
@@ -77,8 +106,8 @@ export default function page() {
               <NavItem
                 label="Shipping Address"
                 Icon={MapPin}
-                active={activeTab === 'My Orders'}
-                onClick={() => setActiveTab('Profile')}
+                active={activeTab === 'Shipping Address'}
+                onClick={() => setActiveTab('Shipping Address')}
               />
               <NavItem
                 label="Change Password"
@@ -90,25 +119,79 @@ export default function page() {
                 label="Logout"
                 Icon={LogOut}
                 danger
-                active={activeTab === 'Change Password'}
-                onClick={() => setActiveTab('Change Password')}
+                onClick={() => logoutHandler()}
               />
             </nav>
           </div>
 
-          <div className="bg-white p-6 rounded-md shadow-md border border-neutral-100 w-full md:w-[70%]">
-            <h2 className="text-xl font-semibold text-neutral-800 mb-4">
-                {activeTab === "Profile" && !isLoading && user ? (
-                    <div className="space-y-4 text-sm text-neutral-700">
-                        <div className="flex items-center gap-3">
-                            <Image src={user?.avatar?.url || '/profile.jpg'} alt="image" width={60} height={60}
-                            className="w-16 h-16 rounded-full border border-neutral-200"
-                            />
-                        </div>
-                    </div>
-                ): <></>}
+          <div className="bg-neutral-800 p-6 rounded-md shadow-sm border border-neutral-100 w-full md:w-[50%]">
+            <h2 className="text-xl font-semibold text-neutral-100 mb-4">
+              {activeTab}
             </h2>
+            {/* Profile */}
+            {activeTab === 'Profile' && !isLoading && user ? (
+              <div className="space-y-4 text-sm text-neutral-100">
+                <div className="flex items-center gap-3">
+                  <Image
+                    src={user?.avatar?.url || '/profile.jpg'}
+                    alt="image"
+                    width={60}
+                    height={60}
+                    className="w-16 h-16 rounded-full border border-neutral-200"
+                  />
+                  <button className="flex items-center gap-1 text-blue-500 text-xs ">
+                    <Pencil className="w-4 h-4" /> Change Photo
+                  </button>
+                </div>
+                <p>
+                  <span className="font-semibold">Name: </span> {user.name}
+                </p>
+                <p>
+                  <span className="font-semibold">Email: </span> {user.email}
+                </p>
+                <p>
+                  <span className="font-semibold">Joined: </span>{' '}
+                  {new Date(user.createdAt).toLocaleDateString()}
+                </p>
+                <p>
+                  <span className="font-semibold">Earned Points: </span>{' '}
+                  {user.points || 0}
+                </p>
+              </div>
+            ) : activeTab === "Shipping Address" ? (
+              <ShoppingAddressSection />
+            ): (<></>)}
           </div>
+
+            {/* Quick Action Cards */}
+          <div className="w-full md:w-1/4 space-y-4">
+            <QuickActionCard
+              Icon={Gift}
+              title="Referral Program"
+              description="Invite friends and earn rewards."
+            />
+            <QuickActionCard
+              Icon={BadgeCheck}
+              title="Your Badges"
+              description="View your earned achievements."
+            />
+            <QuickActionCard
+              Icon={Settings}
+              title="Account Settings"
+              description="Manage Preferences and Security."
+            />
+            <QuickActionCard
+              Icon={Receipt}
+              title="Billing History"
+              description="Check your recent payments."
+            />
+            <QuickActionCard
+              Icon={PhoneCall}
+              title="Support Center"
+              description="Need help? Contact Support."
+            />
+          </div>
+
         </div>
       </div>
     </div>
@@ -118,11 +201,11 @@ export default function page() {
 const NavItem = ({ label, Icon, active, danger, onClick }: any) => (
   <button
     onClick={onClick}
-    className={`w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition
-           ${active ? 'bg-blue-100 text-blue-600' : danger ? 'text-red-500 hover:bg-red-50' : 'text-neutral-700 hover:bg-neutral-100'} 
+    className={`w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition 
+           ${active ? ' bg-blue-100/90 text-blue-600 ' : danger ? 'text-red-500 hover:bg-red-50' : 'text-neutral-100 hover:bg-neutral-500'} 
         `}
   >
-    <Icon className='w-4 h-4' />
+    <Icon className="w-4 h-4" />
     {label}
   </button>
 );

@@ -12,9 +12,12 @@ import { useRouter } from 'next/navigation';
 import useLocationTracking from '@user-ui/src/hooks/useLocationTracking';
 import useDeviceInfo from '@user-ui/src/hooks/useDeviceInfo';
 import { useStore } from '@user-ui/src/store';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Loader2 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import axiosInstance from '@user-ui/src/utils/axiosInstance';
+import { toast } from 'sonner';
 
 export default function page() {
   const {user} = useUser();
@@ -31,6 +34,23 @@ export default function page() {
   const [discountAmount, setDiscountAmount] = useState(0);
   const [couponCode, setCouponCode] = useState('');
   const [selectedAddressId, setSelectedAddressId] = useState('');
+
+  async function createPaymentSession(){
+    setLoading(true)
+    try {
+      const res = await axiosInstance.post("/order/api/create-payment-session", {
+        cart,
+        selectedAddressId,
+        coupon: {}
+      })
+      const sessionId = res.data.sessionId
+      router.push(`/checkout?sessionId=${sessionId}`)
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   function decreaseQuantity(id: string) {
     useStore.setState((state: any) => ({
@@ -59,6 +79,24 @@ export default function page() {
       total + item.quantity * Number(item.sale_price),
     0,
   );
+
+  
+  const {data: addresses = []} = useQuery<any[], Error>({
+    queryKey: ["shipping-addresses"],
+    queryFn: async()=>{
+      const res = await axiosInstance.get("/api/shipping-addresses")
+      return res.data.addresses
+    }
+  })
+
+  useEffect(()=>{
+    if(addresses.length > 0 && !selectedAddressId) {
+      const defaultAddress = addresses.find((address: any)=>address.isDefault)
+      if(defaultAddress){
+        setSelectedAddressId(defaultAddress.id)
+      }
+    }
+  }, [addresses, selectedAddressId])
 
   return (
     <div className="w-full bg-white font-amarna">
@@ -232,13 +270,25 @@ export default function page() {
                   <h4 className="mb-1.75 font-medium text-[15px]">
                     Select Shipping Address
                   </h4>
-                  <select
+                  {addresses.length !== 0 && (
+                    <select
                     className="w-full p-2 border border-neutral-200 rounded-md focus:outline-none focus:border-blue-500 text-black"
                     value={selectedAddressId}
                     onChange={(e) => setSelectedAddressId(e.target.value)}
                   >
-                    <option value="123">Home - New York - USA</option>
+                    {addresses?.map((address: any)=>(
+                    <option value={address.id} key={address.id}>
+                      {address.label} - {address.city}, {address.country}
+                      </option>
+                    ))}
                   </select>
+                  )}
+                  {addresses?.length === 0 && (
+                    <p className="text-sm text-neutral-800">
+                      Please add and address from profile to create an order!
+                    </p>
+                  )}
+
                 </div>
                 <hr className="my-4 text-slate-200" />
 
@@ -259,6 +309,7 @@ export default function page() {
                 </div>
 
                 <button
+                onClick={createPaymentSession}
                 disabled={loading}
                 className='w-full flex items-center justify-center gap-2 cursor-pointer mt-4 py-3 bg-[#010f1c] text-white hover:bg-blue-500 transition-all rounded-lg'
                 >

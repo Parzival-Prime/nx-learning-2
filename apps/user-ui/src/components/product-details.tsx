@@ -423,7 +423,7 @@ export default function ProductDetails({
           <h3 className='text-lg font-semibold'>
             Product Details of {productDetails?.title}
           </h3>
-          <div className="prose prose-sm text-slate-200 max-w-none wrap-break-word"
+          <div className="prose prose-sm text-neutral-900 max-w-none wrap-break-word"
             dangerouslySetInnerHTML={{
               __html: productDetails?.detailed_description
             }}

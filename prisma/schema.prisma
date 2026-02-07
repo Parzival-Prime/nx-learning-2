@@ -40,8 +40,13 @@ model user {
   avatar   image[]  @relation("UserAvatar")
 
   following ShopFollower[]
-
+  addresses Address[]
   reviews shopReview[]
+  orders orders[]
+
+    // 🔔 Notification relations
+  createdNotifications  Notification[] @relation("CreatedNotifications")
+  receivedNotifications Notification[] @relation("ReceivedNotifications")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -178,6 +183,7 @@ model product {
 
   shopId String @db.ObjectId
   shop   shop   @relation(fields: [shopId], references: [id])
+  orderItems orderItem[]
 }
 
 model UserAnalytics {
@@ -213,15 +219,94 @@ model ProductAnalytics {
 
 
 model orders {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  shopId    String   @db.ObjectId
-  shop      shop     @relation(fields: [shopId], references: [id])
+  // 🔗 Relations
+  userId String @db.ObjectId
+  user   user   @relation(fields: [userId], references: [id])
 
-  total     Float    // or Decimal (recommended for money)
+  shopId String @db.ObjectId
+  shop   shop   @relation(fields: [shopId], references: [id])
+
+  // 💰 Order data
+  total  Float
+  status String @default("Pending") // Paid | Pending | Cancelled | Refunded
+
+  // 📦 Shipping & discounts
+  shippingAddressId String? @db.ObjectId
+  couponCode        String?  // amount discounted
+  deliveryStatus    String @default("Ordered")
+
+  // 🧺 Items in this order
+  items orderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([userId])
   @@index([shopId])
+}
+
+
+model orderItem {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  orderId String @db.ObjectId
+  order   orders @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String @db.ObjectId
+  product   product @relation(fields: [productId], references: [id])
+
+  quantity Int
+  price    Float
+
+  selectedOptions Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+
+
+model Address {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId 
+
+  label     String
+  name      String
+  street    String
+  city      String
+  zip       String
+  country   String
+
+  isDefault Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String  @db.ObjectId
+  user user @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+
+model Notification {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  title         String
+  message       String
+  redirect_link String?
+
+  creatorId     String @db.ObjectId
+  receiverId    String @db.ObjectId
+
+  isRead        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  creator  user @relation("CreatedNotifications", fields: [creatorId], references: [id])
+  receiver user @relation("ReceivedNotifications", fields: [receiverId], references: [id])
+
+  @@index([receiverId])
 }

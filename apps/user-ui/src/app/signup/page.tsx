@@ -98,7 +98,7 @@ export function SignupForm({
       return response.data
     },
     onSuccess: ()=>{
-      // router.push("/login")
+      router.push("/login")
     }
   })
 

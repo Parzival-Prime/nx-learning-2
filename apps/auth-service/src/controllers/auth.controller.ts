@@ -2,13 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import { checkOtpRestrictions, handleForgotPassword, sendOtp, trackOtpRequests, validateRegistrationData, verifyForgotPasswordOtp, verifyOtp } from "@auth-service/src/utils/auth.helper";
 import prisma from "@packages/libs/prisma"
 import bcrypt from "bcryptjs"
-import { AuthError, ValidationError } from "@packages/error-handler/index";
+import { AuthError, NotFoundError, ValidationError } from "@packages/error-handler/index";
 import jwt, { JsonWebTokenError } from "jsonwebtoken"
 import { setCookie } from "@auth-service/src/utils/cookies/setCookies";
 import Stripe from "stripe"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: "2025-12-15.clover"
+    apiVersion: "2026-01-28.clover"
 })
 
 // User Controllers
@@ -163,10 +163,10 @@ export async function userResetPassword(req: Request, res: Response, next: NextF
 
 export async function refreshToken(req: any, res: Response, next: NextFunction) {
     try {
-            const refreshToken =
-              req.cookies.refresh_token ||
-              req.cookies.seller_refresh_token ||
-              req.headers.authorization?.split(" ")[1]; 
+        const refreshToken =
+            req.cookies.refresh_token ||
+            req.cookies.seller_refresh_token ||
+            req.headers.authorization?.split(" ")[1];
 
         if (!refreshToken) {
             return res.status(401).json({ message: "Account not found!" });
@@ -182,9 +182,9 @@ export async function refreshToken(req: any, res: Response, next: NextFunction) 
         }
 
         let account;
-        if(decoded.role === "user"){
+        if (decoded.role === "user") {
             account = await prisma.user.findUnique({ where: { id: decoded.id } })
-        } else if(decoded.role === "seller") {
+        } else if (decoded.role === "seller") {
             account = await prisma.seller.findUnique({ where: { id: decoded.id }, include: { shop: true } })
         }
 
@@ -199,9 +199,9 @@ export async function refreshToken(req: any, res: Response, next: NextFunction) 
             { expiresIn: "15m" }
         )
 
-        if(decoded.role === "user") {
+        if (decoded.role === "user") {
             setCookie(res, "access_token", newAccessToken)
-        } else if(decoded.role === "seller") {
+        } else if (decoded.role === "seller") {
             setCookie(res, "seller_access_token", newAccessToken)
         }
 
@@ -441,6 +441,106 @@ export async function createStripeConnectLink(req: Request, res: Response, next:
         })
 
         res.json({ url: accountLink.url })
+    } catch (error) {
+        return next(error)
+    }
+}
+
+export async function addUserAddress(req: any, res: Response, next: NextFunction) {
+    try {
+        const userId = req.user?.id
+        const { label, name, street, city, zip, country, isDefault } = req.body
+
+        if(!label || !name || !street || !city || !zip || !country) {
+            return next(new ValidationError("All fields are required!"))
+        }
+
+        if(isDefault) {
+            await prisma.address.updateMany({
+                where: {
+                    userId,
+                    isDefault: true
+                },
+                data: {
+                    isDefault: false
+                }
+            })
+        }
+
+        const newAddress = await prisma.address.create({
+            data: {
+                userId,
+                label,
+                name,
+                street,
+                city,
+                zip,
+                country,
+                isDefault
+            }
+        })
+
+        res.status(201).json({
+            success: true,
+            address: newAddress
+        })
+    } catch (error) {
+        return next(error)
+    }
+}
+
+export async function deleteUserAddress(req: any, res: Response, next: NextFunction){
+    try {
+        const userId = req.user?.id
+        const {addressId} = req.params
+
+        if(!addressId) {
+            return next(new ValidationError("Address ID is required!"))
+        }
+
+        const existingAddress = await prisma.address.findFirst({
+            where:{
+                id: addressId,
+                userId
+            }
+        })
+
+        if(!existingAddress){
+            return next(new NotFoundError("Address not found or unauthorized"))
+        }
+
+        await prisma.address.delete({
+            where: {
+                id: addressId
+            }
+        })
+
+        res.status(200).json({
+            success: true,
+            message: "Address deleted successfully"
+        })
+    } catch (error) {
+        return next(error)
+    }
+}
+
+export async function getUserAddresses(req: any, res: Response, next: NextFunction) {
+    try {
+        const userId = req.user?.id
+
+        const addresses = await prisma.address.findMany({
+            where: {
+                userId
+            },
+            orderBy: {
+                createdAt: "desc"
+            }
+        })
+
+        res.status(200).json({
+            success: true,
+            addresses
+        })
     } catch (error) {
         return next(error)
     }
