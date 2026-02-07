@@ -5,10 +5,20 @@ import { useEffect } from "react"
 import { useStore } from "@user-ui/src/store/index"
 import confetti from "canvas-confetti"
 import { CheckCircle, Truck } from "lucide-react"
+import { Suspense } from "react";
 
 
 export default function page() {
-    const searchParams = useSearchParams()
+    return (
+    <Suspense fallback={<div>Loading success page...</div>}>
+      <SuccessPage />
+    </Suspense>
+  );
+}
+
+
+const SuccessPage = ()=> {
+const searchParams = useSearchParams()
     const sessionId = searchParams.get("sessionId")
     const router = useRouter()
 

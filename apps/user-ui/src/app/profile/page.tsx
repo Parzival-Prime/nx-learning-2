@@ -27,11 +27,32 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 
 export default function page() {
-  const searchParams = useSearchParams();
+  return (
+    <Suspense fallback={<div>Loading profile...</div>}>
+      <ProfilePage />
+    </Suspense>
+  );
+}
+
+const NavItem = ({ label, Icon, active, danger, onClick }: any) => (
+  <button
+    onClick={onClick}
+    className={`w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition 
+           ${active ? ' bg-blue-100/90 text-blue-600 ' : danger ? 'text-red-500 hover:bg-red-50' : 'text-neutral-100 hover:bg-neutral-500'} 
+        `}
+  >
+    <Icon className="w-4 h-4" />
+    {label}
+  </button>
+);
+
+
+function ProfilePage() {
+const searchParams = useSearchParams();
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -197,15 +218,3 @@ export default function page() {
     </div>
   );
 }
-
-const NavItem = ({ label, Icon, active, danger, onClick }: any) => (
-  <button
-    onClick={onClick}
-    className={`w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition 
-           ${active ? ' bg-blue-100/90 text-blue-600 ' : danger ? 'text-red-500 hover:bg-red-50' : 'text-neutral-100 hover:bg-neutral-500'} 
-        `}
-  >
-    <Icon className="w-4 h-4" />
-    {label}
-  </button>
-);
