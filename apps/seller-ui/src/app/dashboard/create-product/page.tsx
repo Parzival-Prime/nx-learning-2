@@ -14,7 +14,12 @@ import { Input } from '@ui/components/custom-input';
 import ColorSelector from '@ui/components/color-selector';
 import CustomSpecifications from '@ui/components/custom-specifications';
 import CustomProperties from '@ui/components/custom-properties';
-import RichTextEditor from '@ui/components/rich-text-editor';
+import dynamic from 'next/dynamic';
+
+const RichTextEditor = dynamic(
+  () => import('@ui/components/rich-text-editor'),
+  { ssr: false }
+)
 import SizeSelector from '@ui/components/size-selector';
 import { useQuery } from '@tanstack/react-query';
 import axiosInstance from '@seller-ui/src/utils/axiosInstance';
@@ -206,7 +211,7 @@ export default function page() {
           name="images"
           control={control}
           defaultValue={images}
-          render={() => <span/>}
+          render={() => <span />}
         />
         <div className="md:w-[35%] ">
           {images?.length > 0 && (
@@ -483,7 +488,7 @@ export default function page() {
                 rules={{
                   required: 'Detailed description is required!',
                   validate: (value) => {
-                    if (typeof value !== 'string') return 'Invalid content';
+                    if (typeof window === 'undefined') return true; // SSR safe
 
                     const text =
                       new DOMParser()

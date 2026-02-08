@@ -121,10 +121,10 @@ export default function CreateShop({
                   required
                   {...shopCreationForm.register('description', {
                     required: 'Description is required',
-                    validate: (value) => {
+                    validate: (value) => (
                       countWords(value) <= 150 ||
-                        'Description cannot be of more than 150 words.';
-                    },
+                        'Description cannot be of more than 150 words.'
+                    )
                   })}
                 />
                 {shopCreationForm.formState.errors.description && (
@@ -182,9 +182,9 @@ export default function CreateShop({
                   required
                   {...shopCreationForm.register('website', {
                     required: 'website URL is required',
-                    validate: (value) => {
-                      isValidUrl(value) || 'website URL is not valid';
-                    },
+                    validate: (value) => (
+                      isValidUrl(value) || 'website URL is not valid'
+                    ),
                   })}
                 />
                 {shopCreationForm.formState.errors.website && (
