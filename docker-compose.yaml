@@ -79,4 +79,24 @@ services:
       STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY}
       STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
     restart: always
+
+  kafka-service:
+    build:
+      context: .
+      dockerfile: apps/kafka-service/Dockerfile
+      args:
+        MONGODB_URI: ${MONGODB_URI}
+    expose:
+      - "6004"
+    environment:
+      SELLER_UI_URL: ${SELLER_UI_URL}
+      USER_UI_URL: ${USER_UI_URL}
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
+      MONGODB_URI: ${MONGODB_URI}
+      REDIS_URL: ${REDIS_URL}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+    restart: always
       

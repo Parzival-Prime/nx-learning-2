@@ -58,3 +58,10 @@ jobs:
             -f apps/order-service/Dockerfile \
             -t parzivalprime/order-service:latest .
           docker push parzivalprime/order-service:latest
+
+      - name: Build kafka-service
+        run: |
+          docker build \
+            -f apps/kafka-service/Dockerfile \
+            -t parzivalprime/kafka-service:latest .
+          docker push parzivalprime/kafka-service:latest
