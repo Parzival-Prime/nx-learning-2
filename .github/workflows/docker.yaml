@@ -73,7 +73,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "docker-compose.yaml"
-          target: "/home/ubuntu/app/docker-compose.yaml"
+          target: "/home/ubuntu/app/"
 
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v1.0.0
