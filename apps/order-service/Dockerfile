@@ -4,7 +4,7 @@ FROM parzivalprime/my-node-deps:latest AS builder
 
 WORKDIR /repo
 
-COPY apps/order-service ./apps/auth-service
+COPY apps/order-service ./apps/order-service
 COPY packages ./packages
 COPY prisma ./prisma
 
