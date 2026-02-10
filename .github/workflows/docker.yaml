@@ -84,5 +84,6 @@ jobs:
           env_file: .env
           script: |
             cd app
+            docker-compose down --rmi all -v --remove-orphans
             docker-compose pull
             docker-compose up -d
