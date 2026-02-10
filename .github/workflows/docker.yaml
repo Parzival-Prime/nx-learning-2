@@ -17,13 +17,32 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Build deps image
-        run: docker build -f docker/deps.Dockerfile -t parzivalprime/my-node-deps .
-
-      - name: Build auth-service
-        run: docker build -f apps/auth-service/Dockerfile -t parzivalprime/auth-service .
-
-      - name: Push images
+      # -------------------------
+      # 1️⃣ Build & push BASE image
+      # -------------------------
+      - name: Build base image
         run: |
-          docker push parzivalprime/my-node-deps
-          docker push parzivalprime/auth-service
+          docker build \
+            -f docker/base.Dockerfile \
+            -t parzivalprime/my-node-base:latest .
+          docker push parzivalprime/my-node-base:latest
+
+      # -------------------------
+      # 2️⃣ Build & push DEPS image (FROM base)
+      # -------------------------
+      - name: Build deps image
+        run: |
+          docker build \
+            -f docker/deps.Dockerfile \
+            -t parzivalprime/my-node-deps:latest .
+          docker push parzivalprime/my-node-deps:latest
+
+      # -------------------------
+      # 3️⃣ Build & push services (FROM deps/base)
+      # -------------------------
+      - name: Build auth-service
+        run: |
+          docker build \
+            -f apps/auth-service/Dockerfile \
+            -t parzivalprime/auth-service:latest .
+          docker push parzivalprime/auth-service:latest
