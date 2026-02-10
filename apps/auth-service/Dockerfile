@@ -1,13 +1,17 @@
-
 # ---------- BUILD ----------
 FROM parzivalprime/my-node-deps:latest AS builder
 
 WORKDIR /repo
 
+# Copy source code
 COPY apps/auth-service ./apps/auth-service
 COPY packages ./packages
 COPY prisma ./prisma
 
+# Copy dependency files (already installed in my-node-deps)
+COPY package.json package-lock.json ./
+
+# Build app
 ARG MONGODB_URI
 ENV MONGODB_URI=${MONGODB_URI}
 
@@ -19,7 +23,14 @@ FROM parzivalprime/my-node-base:latest
 
 WORKDIR /app
 
-COPY --from=builder /repo/dist/apps/auth-service ./
+# Copy runtime dependencies
+COPY --from=builder /repo/node_modules ./node_modules
+
+# Copy built files
+COPY --from=builder /repo/dist/apps/auth-service ./ 
 COPY --from=builder /repo/generated ./generated
+
+# Set environment variables if needed
+ENV NODE_ENV=production
 
 CMD ["node", "main.js"]
