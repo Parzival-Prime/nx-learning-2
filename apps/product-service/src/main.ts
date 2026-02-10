@@ -11,7 +11,7 @@ import router from './routes/product.router';
 const app = express();
 
 app.use(cors({
-  origin: ["http://localhost:3000"],
+  origin: [process.env.SELLER_UI_URL, process.env.USER_UI_URL],
   allowedHeaders: ["Authorization", "Content-Type"],
   credentials: true
 }))

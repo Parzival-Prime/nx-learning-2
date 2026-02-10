@@ -10,7 +10,7 @@ import { initializeConfig } from './libs/initializeSiteConfig';
 const app = express();
 
 app.use(cors({
-  origin: ["http://localhost:3000", "http://localhost:3001"],
+  origin: [process.env.SELLER_UI_URL, process.env.USER_UI_URL],
   allowedHeaders: ["Authorization", "Content-Type"],
   credentials: true
 }))
@@ -40,9 +40,9 @@ app.get('/gateway-health', (req, res) => {
   res.send({ message: 'Welcome to api-gateway!' });
 })
 
-app.use("/product", proxy("http://localhost:6002"))
-app.use("/order", proxy("http://localhost:6004"))
-app.use("/", proxy("http://localhost:6001"))
+app.use("/product", proxy(process.env.PRODUCT_SERVICE_URL))
+app.use("/order", proxy(process.env.ORDER_SERVICE_URL))
+app.use("/", proxy(process.env.AUTH_SERVICE_URL))
 
 const port = process.env.PORT || 8080;
 const server = app.listen(port, () => {
