@@ -17,9 +17,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      # -------------------------
-      # 1️⃣ Build & push BASE image
-      # -------------------------
       - name: Build base image
         run: |
           docker build \
@@ -27,9 +24,6 @@ jobs:
             -t parzivalprime/my-node-base:latest .
           docker push parzivalprime/my-node-base:latest
 
-      # -------------------------
-      # 2️⃣ Build & push DEPS image (FROM base)
-      # -------------------------
       - name: Build deps image
         run: |
           docker build \
@@ -37,12 +31,30 @@ jobs:
             -t parzivalprime/my-node-deps:latest .
           docker push parzivalprime/my-node-deps:latest
 
-      # -------------------------
-      # 3️⃣ Build & push services (FROM deps/base)
-      # -------------------------
+      - name: Build api-gateway
+        run: |
+          docker build \
+            -f apps/api-gateway/Dockerfile \
+            -t parzivalprime/api-gateway:latest .
+          docker push parzivalprime/api-gateway:latest
+
       - name: Build auth-service
         run: |
           docker build \
             -f apps/auth-service/Dockerfile \
             -t parzivalprime/auth-service:latest .
           docker push parzivalprime/auth-service:latest
+
+      - name: Build product-service
+        run: |
+          docker build \
+            -f apps/product-service/Dockerfile \
+            -t parzivalprime/product-service:latest .
+          docker push parzivalprime/product-service:latest
+
+      - name: Build order-service
+        run: |
+          docker build \
+            -f apps/order-service/Dockerfile \
+            -t parzivalprime/order-service:latest .
+          docker push parzivalprime/order-service:latest
