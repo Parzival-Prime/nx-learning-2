@@ -2,14 +2,11 @@ version: "3.9"
 
 services: 
   api-gateway: 
-    build:
-      context: .
-      dockerfile: apps/api-gateway/Dockerfile
-      args:
-        MONGODB_URI: ${MONGODB_URI}
+    image: parzivalprime/api-gateway:latest
     ports:
       - "80:8080"
     environment:
+      MONGODB_URI: ${MONGODB_URI}
       SELLER_UI_URL: ${SELLER_UI_URL}
       USER_UI_URL: ${USER_UI_URL}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
@@ -21,11 +18,7 @@ services:
     restart: always
 
   auth-service:
-    build:
-      context: .
-      dockerfile: apps/auth-service/Dockerfile
-      args:
-        MONGODB_URI: ${MONGODB_URI}
+    image: parzivalprime/auth-service:latest
     expose:
       - "6001"
     environment:
@@ -41,11 +34,7 @@ services:
     restart: always
   
   product-service:
-    build:
-      context: .
-      dockerfile: apps/product-service/Dockerfile
-      args:
-        MONGODB_URI: ${MONGODB_URI}
+    image: parzivalprime/product-service:latest
     expose:
       - "6002"
     environment: 
@@ -61,11 +50,7 @@ services:
     restart: always
       
   order-service:
-    build:
-      context: .
-      dockerfile: apps/order-service/Dockerfile
-      args:
-        MONGODB_URI: ${MONGODB_URI}
+    image: parzivalprime/order-service:latest
     expose:
       - "6004"
     environment:
@@ -81,13 +66,9 @@ services:
     restart: always
 
   kafka-service:
-    build:
-      context: .
-      dockerfile: apps/kafka-service/Dockerfile
-      args:
-        MONGODB_URI: ${MONGODB_URI}
+    image: parzivalprime/kafka-service:latest
     expose:
-      - "6004"
+      - "6003"
     environment:
       SELLER_UI_URL: ${SELLER_UI_URL}
       USER_UI_URL: ${USER_UI_URL}

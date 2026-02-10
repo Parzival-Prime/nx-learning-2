@@ -65,6 +65,15 @@ jobs:
             -f apps/kafka-service/Dockerfile \
             -t parzivalprime/kafka-service:latest .
           docker push parzivalprime/kafka-service:latest
+      
+      - name: Copy docker-compose.yml to EC2
+        uses: appleboy/scp-action@v0.1.5
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "docker-compose.yaml"
+          target: "/home/ubuntu/app/docker-compose.yaml"
 
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v1.0.0
@@ -72,6 +81,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          env_file: .env
           script: |
             cd app
             docker-compose pull
