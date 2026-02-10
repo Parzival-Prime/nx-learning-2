@@ -1,6 +1,8 @@
 FROM node:20-bullseye
 
-# System tools (minimal)
-RUN apk add --no-cache bash libc6-compat
+RUN apt-get update && apt-get install -y \
+    bash \
+    libc6 \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /repo
