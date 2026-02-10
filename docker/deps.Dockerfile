@@ -1,4 +1,4 @@
-FROM my-node-base AS deps
+FROM parzivalprime/my-node-base:latest AS deps
 
 WORKDIR /repo
 

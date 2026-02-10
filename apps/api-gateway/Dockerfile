@@ -1,6 +1,6 @@
 
 # ---------- BUILD ----------
-FROM my-node-deps AS builder
+FROM parzivalprime/my-node-deps:latest AS builder
 
 WORKDIR /repo
 
@@ -15,7 +15,7 @@ RUN npx prisma generate
 RUN npx nx build api-gateway
 
 # ---------- RUN ----------
-FROM my-node-base
+FROM parzivalprime/my-node-base:latest
 
 WORKDIR /app
 
