@@ -30,6 +30,9 @@ COPY --from=builder /repo/node_modules ./node_modules
 COPY --from=builder /repo/dist/apps/kafka-service ./ 
 COPY --from=builder /repo/generated ./generated
 
+RUN mkdir -p node_modules/.prisma/client \
+    && cp -r generated/prisma/* node_modules/.prisma/client/
+
 # Set environment variables if needed
 ENV NODE_ENV=production
 
