@@ -40,9 +40,69 @@ app.get('/gateway-health', (req, res) => {
   res.send({ message: 'Welcome to api-gateway!' });
 })
 
-app.use("/product", proxy(process.env.PRODUCT_SERVICE_URL))
-app.use("/order", proxy(process.env.ORDER_SERVICE_URL))
-app.use("/", proxy(process.env.AUTH_SERVICE_URL))
+app.use("/product", proxy(process.env.PRODUCT_SERVICE_URL!, {
+  proxyReqPathResolver: (req) => {
+    return `/product${req.url}`;
+  },
+  userResHeaderDecorator(headers, userReq, userRes, proxyReq, proxyRes) {
+  const allowedOrigins = [
+    process.env.SELLER_UI_URL,
+    process.env.USER_UI_URL
+  ];
+
+  const requestOrigin = userReq.headers.origin;
+
+  if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+    headers["Access-Control-Allow-Origin"] = requestOrigin;
+    headers["Access-Control-Allow-Credentials"] = "true";
+    headers["Vary"] = "Origin";
+  }
+
+  return headers;
+}
+}));
+app.use("/order", proxy(process.env.ORDER_SERVICE_URL!, {
+  proxyReqPathResolver: (req) => {
+    return `/order${req.url}`;
+  },
+  userResHeaderDecorator(headers, userReq, userRes, proxyReq, proxyRes) {
+  const allowedOrigins = [
+    process.env.SELLER_UI_URL,
+    process.env.USER_UI_URL
+  ];
+
+  const requestOrigin = userReq.headers.origin;
+
+  if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+    headers["Access-Control-Allow-Origin"] = requestOrigin;
+    headers["Access-Control-Allow-Credentials"] = "true";
+    headers["Vary"] = "Origin";
+  }
+
+  return headers;
+}
+}));
+app.use("/", proxy(process.env.AUTH_SERVICE_URL!, {
+  proxyReqPathResolver: (req) => {
+    return `/${req.url}`;
+  },
+  userResHeaderDecorator(headers, userReq, userRes, proxyReq, proxyRes) {
+  const allowedOrigins = [
+    process.env.SELLER_UI_URL,
+    process.env.USER_UI_URL
+  ];
+
+  const requestOrigin = userReq.headers.origin;
+
+  if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+    headers["Access-Control-Allow-Origin"] = requestOrigin;
+    headers["Access-Control-Allow-Credentials"] = "true";
+    headers["Vary"] = "Origin";
+  }
+
+  return headers;
+}
+}));
 
 const port = Number(process.env.PORT) || 8080;
 const server = app.listen(port, '0.0.0.0', () => {
