@@ -1,5 +1,4 @@
-import express from 'express';
-import cors from "cors"
+import express from 'express'
 import { errorMiddleware } from '@packages/error-handler/error-middleware';
 import cookieParser from 'cookie-parser';
 import router from '@auth-service/src/routes/auth.router';
@@ -8,11 +7,7 @@ import swaggerDocument from "@auth-service/src/swagger-output.json"
 
 const app = express();
 
-app.use(cors({
-  origin: [process.env.SELLER_UI_URL, process.env.USER_UI_URL],
-  allowedHeaders: ["Authorization", "Content-Type"],
-  credentials: true
-}))
+
 app.use(express.json())
 app.use(cookieParser())
 
