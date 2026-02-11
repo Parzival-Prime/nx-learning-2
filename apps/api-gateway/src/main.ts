@@ -44,9 +44,9 @@ app.use("/product", proxy(process.env.PRODUCT_SERVICE_URL))
 app.use("/order", proxy(process.env.ORDER_SERVICE_URL))
 app.use("/", proxy(process.env.AUTH_SERVICE_URL))
 
-const port = process.env.PORT || 8080;
-const server = app.listen(port, () => {
-  console.log(`\n\n//===== API Gateway Listening at http://localhost:${port} ====//\n\n`)
+const port = Number(process.env.PORT) || 8080;
+const server = app.listen(port, '0.0.0.0', () => {
+  console.log(`\n\n//===== API Gateway Listening at http://0.0.0.0:${port} ====//\n\n`)
   try {
     initializeConfig()
     console.log("Site config Initialized successfully!")
