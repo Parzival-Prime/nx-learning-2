@@ -15,7 +15,9 @@ COPY package.json package-lock.json ./
 ARG MONGODB_URI
 ENV MONGODB_URI=${MONGODB_URI}
 
-RUN npx prisma generate
+RUN rm -rf node_modules/.prisma \
+    && rm -rf node_modules/@prisma/client \
+    && npx prisma generate
 RUN npx nx build auth-service
 
 # ---------- RUN ----------

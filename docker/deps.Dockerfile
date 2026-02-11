@@ -1,4 +1,4 @@
-FROM parzivalprime/my-node-base:latest AS deps
+FROM node:20-bullseye
 
 WORKDIR /repo
 

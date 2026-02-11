@@ -19,7 +19,7 @@ jobs:
 
       - name: Build base image
         run: |
-          docker build \
+          docker build --no-cache \
             -f docker/base.Dockerfile \
             -t parzivalprime/my-node-base:latest .
           docker push parzivalprime/my-node-base:latest
