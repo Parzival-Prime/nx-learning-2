@@ -28,7 +28,7 @@ services:
 
   auth-service:
     image: parzivalprime/auth-service:latest
-    expose:
+    ports:
       - "6001:6001"
     environment:
       SELLER_UI_URL: ${SELLER_UI_URL}
@@ -53,7 +53,7 @@ services:
   
   product-service:
     image: parzivalprime/product-service:latest
-    expose:
+    ports:
       - "6002:6002"
     environment: 
       SELLER_UI_URL: ${SELLER_UI_URL}
@@ -78,7 +78,7 @@ services:
       
   order-service:
     image: parzivalprime/order-service:latest
-    expose:
+    ports:
       - "6004:6004"
     environment:
       SELLER_UI_URL: ${SELLER_UI_URL}
@@ -103,7 +103,7 @@ services:
 
   kafka-service:
     image: parzivalprime/kafka-service:latest
-    expose:
+    ports:
       - "6003:6003"
     environment:
       SELLER_UI_URL: ${SELLER_UI_URL}
