@@ -36,7 +36,7 @@ function HeaderBottom() {
   }, []);
   return (
     <div
-      className={`w-full h-[10%] transition-all duration-300 ${isSticky ? 'fixed top-0 left-0 z-100 dark:bg-neutral-700 bg-amber-50 shadow-lg' : 'relative'}`}
+      className={`w-full h-[10%] transition-all duration-300 ${isSticky ? 'fixed top-0 left-0 z-100 dark:bg-neutral-900 bg-amber-50 shadow-lg' : 'relative'}`}
     >
       <div
         className={`w-[80%] relative m-auto flex items-center justify-between ${isSticky ? 'pt-3' : 'py-0'}`}
@@ -77,7 +77,7 @@ function HeaderBottom() {
                   <span className="text-white text-sm font-medium">{wishList?.length}</span>
                 </div>
               </Link>
-              <Link href={'/wishlist'} className="relative">
+              <Link href={'/cart'} className="relative">
                 <ShoppingCartIcon />
                 <div className="w-5 h-5 border-2 border-neutral-100 bg-red-500 rounded-full flex items-center justify-center absolute -top-2 -right-2">
                   <span className="text-white text-sm font-medium">{cart?.length}</span>
