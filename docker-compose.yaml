@@ -29,7 +29,7 @@ services:
   auth-service:
     image: parzivalprime/auth-service:latest
     expose:
-      - "6001"
+      - "6001:6001"
     environment:
       SELLER_UI_URL: ${SELLER_UI_URL}
       USER_UI_URL: ${USER_UI_URL}
@@ -54,7 +54,7 @@ services:
   product-service:
     image: parzivalprime/product-service:latest
     expose:
-      - "6002"
+      - "6002:6002"
     environment: 
       SELLER_UI_URL: ${SELLER_UI_URL}
       USER_UI_URL: ${USER_UI_URL}
@@ -79,7 +79,7 @@ services:
   order-service:
     image: parzivalprime/order-service:latest
     expose:
-      - "6004"
+      - "6004:6004"
     environment:
       SELLER_UI_URL: ${SELLER_UI_URL}
       USER_UI_URL: ${USER_UI_URL}
@@ -104,7 +104,7 @@ services:
   kafka-service:
     image: parzivalprime/kafka-service:latest
     expose:
-      - "6003"
+      - "6003:6003"
     environment:
       SELLER_UI_URL: ${SELLER_UI_URL}
       USER_UI_URL: ${USER_UI_URL}
