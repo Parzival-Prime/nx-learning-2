@@ -10,21 +10,10 @@ import { initializeConfig } from './libs/initializeSiteConfig';
 const app = express();
 
 app.use(cors({
-  origin: function (origin, callback) {
-    const allowedOrigins = [
-      process.env.SELLER_UI_URL,
-      process.env.USER_UI_URL
-    ];
-
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, origin);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+  origin: [process.env.SELLER_UI_URL, process.env.USER_UI_URL],
+  allowedHeaders: ["Authorization", "Content-Type"],
   credentials: true
-}));
-
+}))
 
 app.use(morgan("dev"))
 app.use(express.json({limit: "100mb"}))

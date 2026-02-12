@@ -2,7 +2,10 @@ import axios from "axios"
 
 const axiosInstance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_SERVER_URL,
-    withCredentials: true
+    withCredentials: true,
+    headers: {
+        "ngrok-skip-browser-warning": "true"
+    }
 })
 
 let isRefreshing = false
