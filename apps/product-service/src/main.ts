@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 app.use("/api", router)
 app.use(errorMiddleware)
 
-const port = process.env.PORT || 6002
+const port = Number(process.env.PORT) || 6002
 const server = app.listen(port, ()=>{
     console.log(`\n\n//===== Product service is running at http://localhost:${port}/api ====//\n\n`)
 })

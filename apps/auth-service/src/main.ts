@@ -18,11 +18,11 @@ app.get('/', (req, res) => {
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.get("/docs-json", (req, res) => {
     res.json(swaggerDocument)
-})
+})  
 app.use("/api", router)
 app.use(errorMiddleware)
 
-const port = process.env.PORT || 6001
+const port = Number(process.env.PORT) || 6001
 const server = app.listen(port, ()=>{
     console.log(`\n\n//===== Auth service is running at http://localhost:${port}/api ====//\n\n`)
     console.log(`Swagger docs available at http://localhost:${port}/docs`)

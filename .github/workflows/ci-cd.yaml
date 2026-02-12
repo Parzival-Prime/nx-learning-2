@@ -33,35 +33,35 @@ jobs:
 
       - name: Build api-gateway
         run: |
-          docker build \
+          docker build --no-cache \
             -f apps/api-gateway/Dockerfile \
             -t parzivalprime/api-gateway:latest .
           docker push parzivalprime/api-gateway:latest
 
       - name: Build auth-service
         run: |
-          docker build \
+          docker build --no-cache \
             -f apps/auth-service/Dockerfile \
             -t parzivalprime/auth-service:latest .
           docker push parzivalprime/auth-service:latest
 
       - name: Build product-service
         run: |
-          docker build \
+          docker build --no-cache \
             -f apps/product-service/Dockerfile \
             -t parzivalprime/product-service:latest .
           docker push parzivalprime/product-service:latest
 
       - name: Build order-service
         run: |
-          docker build \
+          docker build --no-cache \
             -f apps/order-service/Dockerfile \
             -t parzivalprime/order-service:latest .
           docker push parzivalprime/order-service:latest
 
       - name: Build kafka-service
         run: |
-          docker build \
+          docker build --no-cache \
             -f apps/kafka-service/Dockerfile \
             -t parzivalprime/kafka-service:latest .
           docker push parzivalprime/kafka-service:latest
