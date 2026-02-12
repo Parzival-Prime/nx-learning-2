@@ -11,8 +11,13 @@ const app = express();
 
 app.use(cors({
   origin: [process.env.SELLER_UI_URL, process.env.USER_UI_URL],
-  allowedHeaders: ["Authorization", "Content-Type"],
-  credentials: true
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "ngrok-skip-browser-warning"
+  ]
 }))
 
 app.use(morgan("dev"))
