@@ -39,7 +39,7 @@
         "main": "apps/auth-service/src/main.ts",
         "tsConfig": "apps/auth-service/tsconfig.app.json",
         "webpackConfig": "apps/auth-service/webpack.config.cjs",
-        "assets": ["apps/auth-service/src/assets"]
+        "assets": ["apps/auth-service/src/assets", "apps/auth-service/src/utils/email-templates"]
       }
     },
     "serve": {
