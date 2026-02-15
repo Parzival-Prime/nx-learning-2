@@ -23,6 +23,8 @@ const renderEmailTemplate = async(templateName: string, data: Record<string, any
     `${templateName}.ejs`
   )
 
+  console.log('template path: ', templatePath)
+
     return ejs.renderFile(templatePath, data)
 }
 

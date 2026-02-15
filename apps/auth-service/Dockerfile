@@ -29,6 +29,7 @@ COPY --from=builder /repo/node_modules ./node_modules
 # Copy built files
 COPY --from=builder /repo/dist/apps/auth-service ./ 
 COPY --from=builder /repo/generated ./generated
+COPY --from=builder /repo/email-templates ./email-templates
 
 RUN mkdir -p node_modules/.prisma/client \
     && cp -r generated/prisma/* node_modules/.prisma/client/
