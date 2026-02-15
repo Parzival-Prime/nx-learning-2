@@ -17,7 +17,18 @@ module.exports = {
       compiler: 'tsc',
       main: './src/main.ts',
       tsConfig: './tsconfig.app.json',
-      assets: ['./src/assets'],
+      assets: [
+    {
+      glob: '**/*',
+      input: './src/assets',
+      output: 'assets'
+    },
+    {
+      glob: '**/*',
+      input: './src/utils/email-templates',
+      output: 'email-templates'
+    }
+  ],
       optimization: false,
       outputHashing: 'none',
       generatePackageJson: true,
